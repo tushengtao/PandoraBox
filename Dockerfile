@@ -3,6 +3,8 @@ FROM registry.cn-shanghai.aliyuncs.com/self_images/python:3.10-slim
 
 WORKDIR /PandoraBox
 
+ENV PYTHONPATH "${PYTHONPATH}:/PandoraBox"
+
 COPY . .
 
 RUN sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list.d/debian.sources \
