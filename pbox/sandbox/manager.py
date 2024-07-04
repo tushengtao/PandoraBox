@@ -3,7 +3,7 @@ import uuid
 from datetime import datetime, timedelta
 import threading
 
-from .sand_box import CodeSandBox
+from pbox.sandbox.sand_box import CodeSandBox
 
 class CodeSandBoxManager:
     def __init__(self):
@@ -30,8 +30,8 @@ class CodeSandBoxManager:
         except Exception as e:
             print(str(e))
             return None
-    
-    
+
+
     def kernels(self, api_key):
         try:
             kernel_ids = self.api_key_to_kernel_ids.get(api_key, [])
@@ -41,7 +41,7 @@ class CodeSandBoxManager:
         except Exception as e:
             print(str(e))
             return None
-    
+
 
     def close_sandbox(self, api_key, kernel_id):
         try:
@@ -58,7 +58,7 @@ class CodeSandBoxManager:
         except Exception as e:
             print(str(e))
             return False
-                
+
 
     def execute_code(self, api_key, kernel_id, code):
         try:

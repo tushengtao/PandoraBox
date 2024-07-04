@@ -4,10 +4,9 @@ from fastapi.openapi.utils import get_openapi
 from pydantic import BaseModel, field_validator
 import json
 import argparse
-
-from .sandbox import CodeSandBoxManager
-from .utils import validate_api_key, validate_kernel_id
-from .utils import new_api_key, look_api_key
+from pbox.sandbox import CodeSandBoxManager
+from pbox.utils import validate_api_key, validate_kernel_id
+from pbox.utils import new_api_key, look_api_key
 
 
 app = FastAPI()
@@ -49,7 +48,7 @@ def health():
 
 
 @app.get('/create', status_code=200)
-def create_sandbox(api_key: str = Depends(validate_api_key)):        
+def create_sandbox(api_key: str = Depends(validate_api_key)):
     kernel_id = sandbox_manager.create_sandbox(api_key)
     if kernel_id:
         print(json.dumps({"api_key": api_key, "kernel_id": kernel_id}, ensure_ascii=False, indent=4))
@@ -58,8 +57,8 @@ def create_sandbox(api_key: str = Depends(validate_api_key)):
         print(f"Failed to create a new sandbox. API_KEY: {api_key}")
         raise HTTPException(status_code=500, detail="Failed to create a new sandbox.")
 
-    
-    
+
+
 @app.post('/execute', status_code=200)
 def execute_code(request: ExecuteRequest, api_key: str = Depends(validate_api_key), kernel_id: str = Depends(validate_kernel_id)):
     code = request.code
@@ -75,11 +74,11 @@ def execute_code(request: ExecuteRequest, api_key: str = Depends(validate_api_ke
         res["API_KEY"] = api_key
         print(json.dumps(res, ensure_ascii=False, indent=4))
         return res
-    
 
-    
+
+
 @app.get('/close', status_code=200)
-def close_sandbox(api_key: str = Depends(validate_api_key), kernel_id: str = Depends(validate_kernel_id)):    
+def close_sandbox(api_key: str = Depends(validate_api_key), kernel_id: str = Depends(validate_kernel_id)):
     status = sandbox_manager.close_sandbox(api_key, kernel_id)
     if not status:
         print(f"Failed to close Sandbox. API_KEY: {api_key}")
@@ -91,8 +90,8 @@ def close_sandbox(api_key: str = Depends(validate_api_key), kernel_id: str = Dep
         print(json.dumps({"message": "Sandbox closed.", "api_key": api_key}, ensure_ascii=False, indent=4))
         return {"message": "Sandbox closed."}
 
-    
-    
+
+
 @app.get('/kernels', status_code=200)
 def get_kernel_ids(api_key: str = Depends(validate_api_key)):
     kernel_ids = sandbox_manager.kernels(api_key)

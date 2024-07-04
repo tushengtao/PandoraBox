@@ -1,7 +1,7 @@
 from fastapi import Header, HTTPException
-from .secret import APIKeyManager
+from pbox.utils.secret import APIKeyManager
 
-api_key_manager = APIKeyManager()  
+api_key_manager = APIKeyManager()
 
 
 def validate_api_key(api_key: str = Header(None)):
