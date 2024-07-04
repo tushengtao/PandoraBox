@@ -12,7 +12,7 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends gcc python3-dev \
     && rm -rf /var/lib/apt/lists/*
 
-RUN RUN pip install --upgrade pip -i https://mirrors.aliyun.com/pypi/simple  \
+RUN pip install --upgrade pip -i https://mirrors.aliyun.com/pypi/simple  \
     && pip install -r requirements.txt -i https://mirrors.aliyun.com/pypi/simple
 
 ENV TZ = Asia/Shanghai
