@@ -4,6 +4,7 @@ FROM registry.cn-shanghai.aliyuncs.com/self_images/python:3.10-slim
 WORKDIR /PandoraBox
 
 ENV PYTHONPATH "${PYTHONPATH}:/PandoraBox"
+ENV TZ = Asia/Shanghai
 
 COPY . .
 
@@ -17,12 +18,11 @@ RUN apt-get update \
 RUN pip install --upgrade pip -i https://mirrors.aliyun.com/pypi/simple  \
     && pip install -r requirements.txt -i https://mirrors.aliyun.com/pypi/simple
 
-ENV TZ = Asia/Shanghai
+
 
 EXPOSE 9501
 
-# 设置入口点为 app.py
-ENTRYPOINT ["python", "pbox/app.py"]
+
 
 # 默认的 CMD 指令，启动服务器
-CMD ["s", "--server", "0.0.0.0", "--port", "9501"]
+CMD ["python", "pbox/app.py", "s", "--server", "0.0.0.0", "--port", "9501"]
