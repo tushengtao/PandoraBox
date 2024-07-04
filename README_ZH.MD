@@ -265,7 +265,7 @@ docker build -t pandora-box .
 touch API_KEYS.txt
 ```
 ```shell
-docker run -p 9501:9501 -v $(pwd)/API_KEYS.txt:/PandoraBox/pdbox/API_KEYS.txt pandora-box
+docker run -p 9501:9501 -v $(pwd)/API_KEYS.txt:/PandoraBox/pdbox/API_KEYS.txt pandora-box:v1.0.0
 ```
 ## 贡献
 欢迎为这个项目做出贡献。你可以开启一个问题(issue)或提交一个拉取请求(pull request)。
