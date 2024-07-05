@@ -2,6 +2,7 @@ requests
 fastapi
 uvicorn
 pydantic
+jupyter
 jupyter-client
 ipython
 pandas
