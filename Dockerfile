@@ -3,8 +3,7 @@ FROM registry.cn-shanghai.aliyuncs.com/self_images/python:3.10-slim
 
 WORKDIR /PandoraBox
 
-ENV PYTHONPATH "${PYTHONPATH}:/PandoraBox"
-ENV TZ = Asia/Shanghai
+ENV PYTHONPATH="${PYTHONPATH}:/PandoraBox" TZ=Asia/Shanghai
 
 COPY . .
 
@@ -13,12 +12,10 @@ RUN sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list.d/debi
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends gcc python3-dev \
-    && rm -rf /var/lib/apt/lists/*
-
-RUN pip install --upgrade pip -i https://mirrors.aliyun.com/pypi/simple  \
-    && pip install -r requirements.txt -i https://mirrors.aliyun.com/pypi/simple
-
-RUN ipython kernel install --name "python3" --user
+    && rm -rf /var/lib/apt/lists/* \
+    && pip install --upgrade pip -i https://mirrors.aliyun.com/pypi/simple  \
+    && pip install -r requirements.txt -i https://mirrors.aliyun.com/pypi/simple \
+    && ipython kernel install --name "python3" --user
 
 EXPOSE 9501
 
