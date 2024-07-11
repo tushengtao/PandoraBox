@@ -1,3 +1,5 @@
+import dotenv
+from dotenv import load_dotenv
 from jupyter_client import KernelManager
 from pbox.utils import Result, Logs, Error
 
@@ -8,6 +10,7 @@ class CodeSandBox:
         self.kc = self.km.client()
         self.kc.start_channels()
         self.kc.wait_for_ready()
+        load_dotenv()
 
     def execute_code(self, code):
         msg_id = self.kc.execute(code)
