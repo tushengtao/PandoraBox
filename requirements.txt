@@ -5,6 +5,7 @@ pydantic
 jupyter
 jupyter-client
 ipython
+ipykernel
 pandas
 numpy
 matplotlib
