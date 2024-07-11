@@ -49,6 +49,7 @@ def health():
 
 @app.get('/create', status_code=200)
 def create_sandbox(api_key: str = Depends(validate_api_key)):
+    print("create_sandbox api_key：", api_key)
     kernel_id = sandbox_manager.create_sandbox(api_key)
     if kernel_id:
         print(json.dumps({"api_key": api_key, "kernel_id": kernel_id}, ensure_ascii=False, indent=4))
