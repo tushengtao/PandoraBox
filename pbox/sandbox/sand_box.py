@@ -22,7 +22,7 @@ class CodeSandBox:
 
         while True:
             try:
-                msg = self.kc.get_iopub_msg(timeout=60)
+                msg = self.kc.get_iopub_msg(timeout=600)
             except Exception as e:
                 print(f"Error getting message: {e}")
                 break
