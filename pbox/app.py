@@ -4,6 +4,7 @@ from fastapi.openapi.utils import get_openapi
 from pydantic import BaseModel, field_validator
 import json
 import argparse
+
 from pbox.sandbox import CodeSandBoxManager
 from pbox.utils import validate_api_key, validate_kernel_id
 from pbox.utils import new_api_key, look_api_key
@@ -16,7 +17,7 @@ def custom_openapi():
         return app.openapi_schema
     openapi_schema = get_openapi(
         title="Pandora Box",
-        version="1.0.0",  # 修改这里来自定义版本信息
+        version="1.1.0",  # 修改这里来自定义版本信息
         description="",
         routes=app.routes,
     )
@@ -41,15 +42,46 @@ class ExecuteRequest(BaseModel):
             raise ValueError("Invalid code")
         return value
 
-@app.get('/health', status_code=200)
+@app.get('/health',
+         status_code=200,
+         summary="Check the health status of the PandoraBox.",
+         operation_id="health",
+         responses={
+             200: {
+                 "description": "The health status of the PandoraBox.",
+                 "content": {
+                     "text/plain": {
+                         "example": "success"
+                     }
+                 }
+             }
+         })
 def health():
     return 'success'
 
 
 
-@app.get('/create', status_code=200)
-def create_sandbox(api_key: str = Depends(validate_api_key)):
-    print("create_sandbox api_key：", api_key)
+@app.get('/create',
+         status_code=200,
+         summary="Create a python sandbox to receive a unique kernel ID, which allows you to execute python code within it.",
+         operation_id="create_sandbox",
+         responses={
+             200: {
+                 "description": "The id of the created python sandbox.",
+                 "content": {
+                     "application/json": {
+                         "example": {"kernel_id": "xx-xx-xx-xx"}
+                     }
+                 }
+             },
+             400: {
+                 "description": "Bad Request - API Key missing or invalid."
+             },
+             500: {
+                 "description": "Internal Server Error - Failed to create a new sandbox."
+             }
+         })
+def create_sandbox(api_key: str = Depends(validate_api_key)):        
     kernel_id = sandbox_manager.create_sandbox(api_key)
     if kernel_id:
         print(json.dumps({"api_key": api_key, "kernel_id": kernel_id}, ensure_ascii=False, indent=4))
@@ -58,9 +90,35 @@ def create_sandbox(api_key: str = Depends(validate_api_key)):
         print(f"Failed to create a new sandbox. API_KEY: {api_key}")
         raise HTTPException(status_code=500, detail="Failed to create a new sandbox.")
 
-
-
-@app.post('/execute', status_code=200)
+    
+    
+@app.post('/execute',
+          status_code=200,
+          summary="Execute Python code and return the results.",
+          operation_id="execute_code",
+          responses={
+              200: {
+                  "description": "The result of the python code, contains three parts: results, logs and error",
+                  "content": {
+                      "application/json": {
+                          "example": {
+                              "results": [],
+                              "logs": {
+                                  "stdout": ["Hello, PandoraBox!"],
+                                  "stderr": []
+                              },
+                              "error": None
+                          }
+                      }
+                  }
+              },
+              400: {
+                  "description": "Bad Request - API Key / Kernel ID missing or invalid."
+              },
+              500: {
+                  "description": "Internal Server Error - Failed to execute code."
+              }
+          })
 def execute_code(request: ExecuteRequest, api_key: str = Depends(validate_api_key), kernel_id: str = Depends(validate_kernel_id)):
     code = request.code
     execution_result = sandbox_manager.execute_code(api_key, kernel_id, code)
@@ -75,11 +133,32 @@ def execute_code(request: ExecuteRequest, api_key: str = Depends(validate_api_ke
         res["API_KEY"] = api_key
         print(json.dumps(res, ensure_ascii=False, indent=4))
         return res
+    
 
-
-
-@app.get('/close', status_code=200)
-def close_sandbox(api_key: str = Depends(validate_api_key), kernel_id: str = Depends(validate_kernel_id)):
+    
+@app.get('/close',
+         status_code=200,
+         summary="Close the python sandbox.",
+         operation_id="close_sandbox",
+         responses={
+             200: {
+                 "description": "Closing result.",
+                 "content": {
+                     "application/json": {
+                         "example": {
+                             "message": "Sandbox closed."
+                         }
+                     }
+                 }
+             },
+             400: {
+                 "description": "Bad Request - API Key / Kernel ID missing or invalid."
+             },
+             500: {
+                 "description": "Internal Server Error - Failed to close Sandbox."
+             }
+         })
+def close_sandbox(api_key: str = Depends(validate_api_key), kernel_id: str = Depends(validate_kernel_id)):    
     status = sandbox_manager.close_sandbox(api_key, kernel_id)
     if not status:
         print(f"Failed to close Sandbox. API_KEY: {api_key}")
@@ -91,9 +170,30 @@ def close_sandbox(api_key: str = Depends(validate_api_key), kernel_id: str = Dep
         print(json.dumps({"message": "Sandbox closed.", "api_key": api_key}, ensure_ascii=False, indent=4))
         return {"message": "Sandbox closed."}
 
-
-
-@app.get('/kernels', status_code=200)
+    
+    
+@app.get('/kernels',
+         status_code=200,
+         summary="List all created python sandbox kernels.",
+         operation_id="get_kernel_ids",
+         responses={
+             200: {
+                 "description": "The list of created python sandbox kernels.",
+                 "content": {
+                     "application/json": {
+                         "example": {
+                             "kernel_ids": ["xxx", "xxx", "xxx"]
+                         }
+                     }
+                 }
+             },
+             400: {
+                 "description": "Bad Request - API Key / Kernel ID missing or invalid."
+             },
+             500: {
+                 "description": "Internal Server Error - Failed to get kernels."
+             }
+         })
 def get_kernel_ids(api_key: str = Depends(validate_api_key)):
     kernel_ids = sandbox_manager.kernels(api_key)
     if not kernel_ids:
