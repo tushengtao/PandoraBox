@@ -1,4 +1,4 @@
-from .secret import APIKeyManager
+from pbox.utils.secret import APIKeyManager
 
 api_key_manager = APIKeyManager()
 

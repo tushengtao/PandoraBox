@@ -249,7 +249,24 @@ csb_manager.close_sandbox(
     "your-kernel-id"
 )
 ```
-
+## docker部署
+### 构建镜像
+```shell
+git clone https://github.com/pydaxing/PandoraBox.git
+```
+```shell
+cd PandoraBox
+```
+```shell
+docker build -t pandora-box:v1.0.0 .
+```
+### 运行启动
+```shell
+touch API_KEYS.txt
+```
+```shell
+docker run -d --name pandora-box -p  9501:9501 -v $(pwd)/API_KEYS.txt:/PandoraBox/pbox/API_KEYS.txt pandora-box:v1.0.0
+```
 ## 贡献
 欢迎为这个项目做出贡献。你可以开启一个问题(issue)或提交一个拉取请求(pull request)。
 

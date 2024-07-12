@@ -1,10 +1,14 @@
+import os
+from dotenv import load_dotenv
 from jupyter_client import KernelManager
 from pbox.utils import Result, Logs, Error
 
 class CodeSandBox:
     def __init__(self):
         self.km = KernelManager(kernel_name='python3')
-        self.km.start_kernel()
+        load_dotenv()
+        env = os.environ.copy()
+        self.km.start_kernel(env=env)
         self.kc = self.km.client()
         self.kc.start_channels()
         self.kc.wait_for_ready()
