@@ -5,9 +5,9 @@ from pydantic import BaseModel, field_validator
 import json
 import argparse
 
-from .sandbox import CodeSandBoxManager
-from .utils import validate_api_key, validate_kernel_id
-from .utils import new_api_key, look_api_key
+from pbox.sandbox import CodeSandBoxManager
+from pbox.utils import validate_api_key, validate_kernel_id
+from pbox.utils import new_api_key, look_api_key
 
 
 app = FastAPI()
