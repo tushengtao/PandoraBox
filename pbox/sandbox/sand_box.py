@@ -1,7 +1,9 @@
+import asyncio
 import os
 from dotenv import load_dotenv
 from jupyter_client import KernelManager
 from pbox.utils import Result, Logs, Error
+
 
 class CodeSandBox:
     def __init__(self):
@@ -51,9 +53,10 @@ class CodeSandBox:
 
         logs = Logs(stdout=stdout_content, stderr=stderr_content)
         # Restart kernel to clear environment
-        self.restart_kernel()
+        asyncio.create_task(self.restart_kernel())
         return Result(results=results, logs=logs, error=error)
-    def restart_kernel(self):
+
+    async def restart_kernel(self):
         """ Restart the kernel to clear the environment. """
         try:
             load_dotenv()

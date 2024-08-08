@@ -58,8 +58,8 @@ class CodeSandBoxManager:
         try:
             with self.lock:
                 if kernel_id in self.sandboxes:
-                    # 空闲列表20个以内，则添加到空闲列表中，否则关闭并删除
-                    if len(self.idle_kernels) < 20:
+                    # 空闲列表200个以内，则添加到空闲列表中，否则关闭并删除
+                    if len(self.idle_kernels) < 200:
                         self.idle_kernels.add(kernel_id)  # 将 kernel_id 标记为空闲
                     else:
                         sandbox = self.sandboxes.pop(kernel_id, None)
