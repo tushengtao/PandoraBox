@@ -53,10 +53,10 @@ class CodeSandBox:
 
         logs = Logs(stdout=stdout_content, stderr=stderr_content)
         # Restart kernel to clear environment
-        asyncio.create_task(self.restart_kernel())
+        self.restart_kernel()
         return Result(results=results, logs=logs, error=error)
 
-    async def restart_kernel(self):
+    def restart_kernel(self):
         """ Restart the kernel to clear the environment. """
         try:
             load_dotenv()
