@@ -50,7 +50,20 @@ class CodeSandBox:
                     results.append({"type": data_type, "data": data_value})
 
         logs = Logs(stdout=stdout_content, stderr=stderr_content)
+        # Restart kernel to clear environment
+        self.restart_kernel()
         return Result(results=results, logs=logs, error=error)
+    def restart_kernel(self):
+        """ Restart the kernel to clear the environment. """
+        try:
+            load_dotenv()
+            env = os.environ.copy()
+            self.km.restart_kernel(now=True, env=env)
+            self.kc = self.km.client()
+            self.kc.start_channels()
+            self.kc.wait_for_ready()
+        except Exception as e:
+            print(f"Error restarting kernel: {e}")
 
     def close(self):
         try:
