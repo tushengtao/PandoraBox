@@ -52,8 +52,6 @@ class CodeSandBox:
                     results.append({"type": data_type, "data": data_value})
 
         logs = Logs(stdout=stdout_content, stderr=stderr_content)
-        # Restart kernel to clear environment
-        self.restart_kernel()
         return Result(results=results, logs=logs, error=error)
 
     def restart_kernel(self):

@@ -56,6 +56,9 @@ class CodeSandBoxManager:
 
     def close_sandbox(self, api_key, kernel_id):
         try:
+            sandbox = self.sandboxes[kernel_id]
+            print(f"restart_kernel 重启:{kernel_id} ")
+            sandbox.restart_kernel()
             with self.lock:
                 if kernel_id in self.sandboxes:
                     # 空闲列表200个以内，则添加到空闲列表中，否则关闭并删除
