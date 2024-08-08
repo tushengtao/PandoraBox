@@ -31,10 +31,12 @@ class CodeSandBoxManager:
                 # 将新创建的 kernel_id 添加到对应的 API_KEY 列表中
                 if api_key not in self.api_key_to_kernel_ids:
                     self.api_key_to_kernel_ids[api_key] = []
-                self.api_key_to_kernel_ids[api_key].append(kernel_id)
 
-                # 设置 8 小时后自动关闭 kernel 的定时器
-                timer = threading.Timer(8 * 3600, self.close_sandbox, [api_key, kernel_id])
+                if kernel_id not in self.api_key_to_kernel_ids[api_key]:
+                    self.api_key_to_kernel_ids[api_key].append(kernel_id)
+
+                # 设置 4 小时后自动关闭 kernel 的定时器
+                timer = threading.Timer(4 * 3600, self.close_sandbox, [api_key, kernel_id])
                 timer.daemon = True
                 timer.start()
                 return kernel_id
@@ -64,8 +66,6 @@ class CodeSandBoxManager:
                         if sandbox:
                             sandbox.close()
                             self.api_key_to_kernel_ids[api_key].remove(kernel_id)
-                            if not self.api_key_to_kernel_ids[api_key]:
-                                _ = self.api_key_to_kernel_ids.pop(api_key, None)
                     return True
                 else:
                     return f"未找到 {api_key} 对应的 kernel。请先创建一个 kernel。"
