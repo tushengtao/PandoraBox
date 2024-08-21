@@ -21,3 +21,4 @@ langchain-experimental==0.0.60
 langchain-openai==0.1.8
 python-dotenv==1.0.1
 alibabacloud_bailian20231229==1.7.0
+dashscope==1.20.4
